@@ -1,0 +1,132 @@
+# Video 2 
+Video membahas laravel UI -> package laravel, yang bisa bantu membuat halaman register, layout, dan login dengan cepat menggunakan (Vue, bootstrap, atau react). Laravel UI adalah pendahulu Breeze dan Jetstream (yang menggunakan tailwind css).
+
+# Video 3 (Routing)
+Halaman login -> kenapa bisa muncul halaman login?
+1. halaman login bisa muncul karena ada karakter '/' (route utama http://127.0.0.1:8000/) di web.php yang mengembalikan view 'auth.login' (file login di folder auth).
+2. karna kita akan membuat aplikasi manajemen pegawai, kita buat route '/pegawai' di web.php. Setelah membuat route, kita bisa buatkan sebuah view untuk route tersebut menggunakan perintah php artisan make:view.
+3. perintah familiar berikutnya adalah 'redirect'. mengarahkan route yang kita buat ke route yang sudah ada atau website yang berbeda 'return redirect()-> away(https://youtube.com);'
+4. Baca Dokumentasi laravel.
+5. kemudian untuk penamaan route, digunakan agar saat kita melakukan refirect, kita tidak perlu menuliskan route nya secara spesifik, kita hanya perlu membuat nama dari route tersebut lalu memganggilnya pada perinteah redirect. Hal ini juga memiliki keuntungan di mana saat kita mengganti route asli, redirect yang ada tidak akan error, karna yang kita ambil namanya, bukan route nya.
+6. fallback routes akan dieksekusi ketika laravel tidak menemukan route yang kita akses, hasilnya pasti akan 404.
+
+# Video 4 (Model dan Migrasi)
+Migrasi adalah cara laravel untuk mengatur struktur table database lewat code (tidak seperti pma).
+Model adalah representasi dari table yang kita miliki di database. Model juga akan kita gunakan untuk melakukan kkueri ke database dan juga membuat relasi antar table.
+Untuk menambahkan kolom saat data sudah banyak ke dalam table, adalah dengan menggunakan perintah seperti ini:
+'php artisan make:migration add_nip_to_table_pegawais --table=pegawais'
+
+Untuk rename suatu kolom pada table di database dapat menggunakan perintah:
+'php artisan make:migration rename_nip_to_nik_table_pegawais --table=pegawais'
+
+# Video 5 (Query, Factory, Seeder)
+Seeder bisa membantu kita mengisi data ke dalam database secara otomatis. Contoh dari perintah seed adalah:
+'php artisan make:seeder UserSeeder'
+Namun sebelum melakukan seed data, kita harus pergi ke model untuk melakukan konfigurasi field mana saja yang bisa diisi,
+biasanya dilakukan dengan 'protected $guarded = ['id']'
+artinya, id tidak bisa diisi manual oleh user karena diisi otomatis oleh sistem.
+kemudian ada satu library yang dinamakan Faker, library ini menyediakan data data dummy.
+pada Faker kita bisa mengatur sebanyak apa data dan bahasa apa yang ingin digunakan (selama bahasa available pada library)
+kita juga bisa menggunakan factory untuk mengisi data di dalam table. pada factory kita tidak perlu melakukan import faker, kita akan menggunakan $this->faker.
+namun pada factory, defaultnya inggris, ganti saja faker locale pada .env jika diperlukan.
+pada seeder, kita ganti kalau sebelumnya menggunakan faker, jadi menggunakan factory create. pada model juga harus kita beri tahu dengan membuat 'use HasFactory'.
+
+- Eloquent
+eloquent adalah cara melakukan queri yang dipermudah oleh laravel, misalnya saat kita ingin menampilkan semua data dari suatu table, biasanya kita akan menggunakan 'SELECT * FROM TABLE' namun engan eloquent kita bisa menggunakan namaModel::all(), dan lainnya
+
+# Video 6 (Read Data + DataTable)
+pada web.php kita dapat membuat route dengan fungsi resource. contoh: 
+Route::resource('pegawai', PegawaiController::class);
+resource ini sudah dilengkapi dengan dasar fungsi CRUD
+untuk index, kita buat file index di folder pegawai dulu.
+setelah kita buat file index, selanjutnya kita buat tablenya, lalu kita lakukan for each untuk mengisi data di dalam table menggunakan fitur eloquent tadi.
+untuk mempercantik tampilan table, kita dapat menggunakan datatable
+- pertama kita akses jquery cdn untuk menjalankan datatables
+- kemudian akses datatables dan copas css serta scriptnya
+
+# Video 7 (Insert Data)
+- Ide modifikasi: umur langsung dihitung dari saat user masukkan tanggal lahir (after flash message)
+- ide modifikasi : tahun lahir tidak boleh tahun sekarang (after flash message)
+
+# Video 8 (Update Data)
+Pada route list edit data, diperlukan sebuah parameter,
+pegawai/{pegawai}/edit. 
+parameter ini kita kirim melalui href dropdown menu, dengan kolom unik id.
+pada edit, kita mengarahkan controller ke fungsi update, bukan store. route ini juga membutuhkan parameter, oleh sebab itu kita tambahkan sebuah parameter unik -> id
+di bawah @csrf jangan lupa untuk menambahkan sebuah @method('PUT')
+
+# Video 9
+untuk delete kita perlu parameter juga, jadi kita pakai form untuk tombol delete nya. Kemudian kita juga akan menerapkan flash message setelah selesai melakukan sesuatu.
+untuk delete sudah dikerjakan, oleh sebab itu kita perlu melakukannya juga untuk 
+- Ide modifikasi: tambahkan flash message untuk edit dan tambah data (diganti jadi sweetalert video 15)
+
+untuk menghilangkan alert setelah beberapa detik, kita cari dari stackoverflow tentang javascript Bootstrap Alert Auto Close, lalu tambahkan di bawah datatable,
+id nya juga harus kita sesuaikan dengan alert yang dibuat di atas yield content.
+
+# Video 10A
+1. Cari mantis dashboard bootstrap di themewagon
+2. setelah download pindahkan folder dist ke /public/template/dist proyek laravel
+3. buat layout baru yaitu mantis, lalu copas halaman dashboard mantis ke situ
+4. ganti semua css dan javascriptnya
+5. pada file mantis.blade.php banyak direktori ../assets, assets merepresentasikan sebuah folder (/public/template/dist)
+6. ganti .. sebelum assets menjadi {{ asset('template/dist') }}
+7. untuk halaman create, edit, dan delete ganti layouts.app jadi layouts.mantis kemudian hapus containernya
+8. masukkan css dan javascript dari app ke mantis, lalu hapus yang resources css dari app karna kita sudah pake yang dari mantis
+9. masukkan alert di atas yield('content')
+10. jangan lupa juga untuk tambahkan jquery di bawah footer
+11. component gak akan bisa diakses, jadi kita ke app.js yang ada di mantis, lalu import "bootstrap/dist/js/bootstrap.bundle.min.js"
+
+# Video 10B
+1. pada bagian register, password harus dikonfirmasi karena adanya atribut confirmed pada validator register controller
+2. buatkan inputan baru untuk password confirmation pada halaman register
+
+# Video 11
+1. di laravel ada 2 reusable component (class dan anonymous)
+2. kita akan pindahkan sidebar ke anonymous komponen
+3. untuk anonymous component kita menggunakan perintah make:component namaComponent--view (sidebar, header, footer, meta header)
+4. untuk sidebar kita akan jadikan class component dengan perintah make:component Sudebar/Links makan akan dibuatkan class nya juga (App/View/Sidebar/links.php)
+5. untuk class component kita harus perhatikan struktur dari component yang akan kita pecah, misalnya apakah ada route, icon, atau title nya, kemudian, ketiga variable ini dapat kita inisialisasi di class komponen app/view/compnents/namaComponent
+6. kemudian kita membuat sebuah logic di mana jika user sedang berada di suatu sidebar makan akan ditandai dengan warna biru muda. logicnya dengan mencari base path dari setiap route karena ada route yang 'beranak' seperti pegawai.index, pegawai.create, dan seiring membesarnya proyek
+
+
+# Video 12
+1. kita akan menambahkan fitur upload foto karyawan
+2. kita membuat masukan baru untuk foto pegawai dengan membuat sebuah masukan bertipe file pada create pegawai, pada form kita tambahkan enctype multipart/form-data
+3. setelah itu, kita lakukan pembuatkan nama file foto yang diupload, karena database tidak bisa menyimpan objek foto, oleh sebab itu kita simpan nama file nya saja dengan unik menggunakan uuid, llalu fotonya kita simpan di app/storage/public
+4. setelah itu kita lakukan perintah php artisan storage:link untuk menyambungkan storage dengan path di controller nya
+5. karena di migrasi belum ada kolom untuk menyimpan nama foto, jadi kita buat migrasi baru untuk menambahkan sebuah kolom foto after email, jangan lupa membuat dropcolumn nya juga di bawah
+6. kita akan gunakan modals dari bootstrap untuk menampilkan foto
+7. copas modal btn ke td foto 
+8. lalu bagian modal nya copas ke bagian paling bawah
+
+# Video 13 (Eloquent Relationship)
+1. method truncate digunakan untuk menghapus semua data di dalam table
+2. akses localhost/truncate, lalu beri comment setelah truncate
+3. tambah kolom pegawai_id di user untuk membuat relasi dengan pegawai
+4. tambahkan juga kolom user_id di pegawai untuk membuat relasi dengan user
+5. untuk kolom masukan email, validasinya harus unik antar user di tabel users 
+6. setelah memasukkan kolom user_id ke tabel pegawai, kita harus memasukkan nilai user_id juga setelah submit data, caranya adalah pertama request data dari create yang membuat sebuah row di tabel pegawai, kita masukkan ke variable newData (berisi nama pegawai, email, id (pegawai_id), umur, dll).
+7. untuk user, kita buat dengan menggunakan data dari pegawai, di mana namanya kita ambil dari newData nama_pegawai, dan seterusnya, untuk password kita akan gunakan hash
+8. untuk user_id tadi kita isikan dari id user yang baru kita buat dari user create, setelah itu save
+9. jangan lupa kita harus menambahkan pegawai_id di model user begitu juga di pegawai
+10. buatkan relasi hasOne di pegawai, dan belongsTo di user. (Pegawai hasOne User, User belongsTo Pegawai)
+11. setelah itu di pegawai controller kita hapus juga si user nya sebelum menghapus pegawai, agar di database, data user dari pegawai yang kita hapus juga ikut terhapus
+12. pada index pegawai, untuk mengambil email, kita bisa gunakan lazy loading, yaitu menggunakan user->email, kita juga bisa mengakses data lain yang ada di user seperti nama
+13. namun kita disarankan untuk menggunakan eager loading. caranya di pegawai controller kita buatkan sebuah variable pegawai yang berisi model pegawai dan relasinya ke user, hal ini dapat menyelesaikan permasalahan kueri N+1 di laravel
+
+# Video 14 (One to Many)
+1. kita akan membuat relasi pegawai dengan divisi, jadi kita buat dulu model divisi, lengkap dengan controller, migration, dan seedernya,
+2. untuk seeder kita buatkan beberapa nama divisi
+3. kamudian kita buatkan lagi kolom foreign key divisi dengan pegawai di tabel pegawai 
+4. untuk migrasi ini kita buatkan si divisi_id itu akan jadi null kalau data bagiannya dihapus (nullOnDelete)
+5. sedangkan kalau casenya seperti user dan pegawai kemarin, kita gunakan cascadeOnDelete, agar ketika si user dihapus, makan pegawai juga ikut terhapus
+6. kita buatkan relasi antar pegawai dan divisi, di pegawai kita buat belongsTo divisi, di divisi kita buat hasMany pegawai
+- ide modifikasi : tambahkan edit data divisi dan hapus data divisi (done)
+
+# Video 15 SweetAlert
+1. buka sweetalert by rashid ali 
+2. lakukan instalasi dengan composer
+3. masukkan include sweetalert sebelum tag penutup body
+4. masukkan perintah php artisan sweetalert:publish
+5. sweetalert.php adalah konfigurasi utama dari sweetalertnya
+6. pada sweetalert bagian usage, kita import class nya di conttroller

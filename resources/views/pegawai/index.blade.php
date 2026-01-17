@@ -1,0 +1,111 @@
+@extends('layouts.mantis')
+@section('content')
+
+    <div class="">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-title">Data Pegawai</div>
+                <div>
+                    <a href="{{ route('pegawai.create') }}" class="btn btn-primary">
+                        Tambah Data
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered" id="table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Pegawai</th>
+                            <th>Divisi</th>
+                            <th>Foto Pegawai</th>
+                            <th>Email</th>
+                            <th>NIK</th>
+                            <th>Umur</th>
+                            <th>Tempat, Tanggal Lahir</th>
+                            <th>Alamat</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Opsi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($pegawai as $index => $item)
+                            <tr>
+                                <td>{{ $index + 1}}</td>
+                                <td>{{ $item->nama_pegawai }}</td>
+                                <td>{{ $item->divisi ? $item->divisi->nama_divisi : 'Not Set' }}</td>
+                                <td class="d-flex justify-content-center ">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFoto{{ $item->id }}">
+                                    Lihat Foto
+                                    </button>
+                                </td>
+                                <td>{{ $item->user->email }}</td>
+                                <td>{{ $item->nik }}</td>
+                                <td>{{ $item->umur }}</td>
+                                <td>{{ $item->tempat_lahir }}, 
+                                {{ \Carbon\Carbon::parse($item->tanggal_lahir)->locale('id')->translatedFormat(' d F Y') }}</td>
+                                <td>{{ $item->alamat }}</td>
+                                <td>{{ $item->jenis_kelamin }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Aksi
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <li><a class="dropdown-item" href="{{ route('pegawai.edit', $item->id) }}">Edit</a></li>
+                                        <li><button type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $item->id }}">Hapus Data</button></li>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+@foreach ($pegawai as $item)
+    <!-- Modal -->
+    <div class="modal fade" id="confirmDeleteModal{{ $item->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Hapus Data?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Data akan terhapus secara permanen, klik <b>lanjutkan</b> untuk menghapus data</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+
+            <form action="{{ route('pegawai.destroy', $item->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Lanjutkan</button>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+@endforeach
+
+@foreach ($pegawai as $item)
+    <div class="modal fade" id="modalFoto{{ $item->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Foto Pegawai</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <img src="{{ asset('storage/foto_pegawai/' . $item->foto) }}" alt="{{ $item->foto }}" class="img-fluid">
+        </div>
+        </div>
+    </div>
+    </div>
+@endforeach
+
+@endsection
