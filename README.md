@@ -23,13 +23,18 @@ This project is a simple Laravel application built for learning and practicing t
 ## Features
 
 1.  **Dashboard**: Overview of application statistics.
+![alt text](image-3.png)
 2.  **User Management**:
+![alt text](image-4.png)
     * Role-based access control using Middleware.
     * Secure authentication.
+    ![alt text](image-2.png)
 3.  **Employee Data (Pegawai)**:
+![alt text](image-5.png)
     * Complete CRUD operations.
     * Photo upload capability.
 4.  **Division Data (Divisi)**:
+![alt text](image-6.png)
     * Complete CRUD operations for managing company divisions.
 
 ---
@@ -41,8 +46,10 @@ The application uses the following relationship structure:
 * **One to One**:
     * `Pegawai` ↔ `User Account`
     * `User Account` ↔ `Role`
+    ![alt text](image.png)
 * **One to Many**:
     * `Divisi` → `Pegawai` (One Division has many Employees)
+    ![alt text](image-1.png)
 
 ---
 
